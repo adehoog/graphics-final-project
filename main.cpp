@@ -14,13 +14,21 @@
 #include <vector>
 #include <chrono>
 #include "include/sphere.h"
+#include "include/camera.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
+unsigned int loadTexture(char const* path);
 
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
+
+int cameraView = 0;
+Camera ourCamera = Camera();
+
+//glm::vec3 cameraPos(0.0f, 250.0f, -450.0f);
+//glm::vec3 cameraDir(0.0f, 0.0f, -1.0f);
 
 int main()
 {
@@ -68,24 +76,41 @@ int main()
     bool res = loadObject("objectfiles/cube.obj", vertices, normals);
     */
 
-    // Create planets
+    /* LOAD TEXTURES */
+    unsigned int texture_earth = loadTexture("planets/earth2k.jpg");
+    unsigned int t_sun = loadTexture("planets/2k_sun.jpg");
+    unsigned int texture_moon = loadTexture("planets/2k_moon.jpg");
+    unsigned int texture_mercury = loadTexture("planets/2k_mercury.jpg");
+    unsigned int texture_venus = loadTexture("planets/2k_mercury.jpg");
+    unsigned int texture_mars = loadTexture("planets/2k_mars.jpg");
+    unsigned int texture_jupiter = loadTexture("planets/2k_jupiter.jpg");
+    unsigned int texture_saturn = loadTexture("planets/2k_saturn.jpg");
+    unsigned int texture_uranus = loadTexture("planets/2k_uranus.jpg");
+    unsigned int texture_neptune = loadTexture("planets/2k_neptune.jpg");
+    unsigned int texture_saturn_ring = loadTexture("planets/r.jpg");
+    unsigned int texture_earth_clouds = loadTexture("planets/2k_earth_clouds.jpg");
+
+    /* CREATE PLANET SPHERES */
     Sphere Sun(100.0f, 36 * 5, 18 * 5);
 
-    // Camrea matrix
-    glm::vec3 cameraPos(0.0, 0.0, -1.0);
+    // View matrix
+    glm::mat4 View = ourCamera.GetViewMatrix();
+    /*
     glm::mat4 View = glm::lookAt(
         cameraPos, // camera position in world Space
-        glm::vec3(0, 0, 1), // where you want to look at in world space
+        //glm::vec3(0, 0, 1), // where you want to look at in world space
+        cameraDir,
         glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
     );
+    */
     // Model matrix : an identity matrix (model will be at the origin)
     glm::mat4 Model = glm::mat4(1.0f);
     // Projection matrix
     
-    /*
-    glm::mat4 Projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH/(float)SCR_HEIGHT, 0.1f, 100.0f);
+    glm::mat4 Projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH/(float)SCR_HEIGHT, 0.1f, 10000.0f);
     //Projection = glm::ortho(0.0f, (float)SCR_WIDTH, 0.0f, (float)SCR_HEIGHT, 0.1f, 100.0f);
 
+    /*
     unsigned int numVertices = vertices.size();
     std::cout << "Number of verticies " << numVertices <<"\n";
     unsigned int numNormals = normals.size();
@@ -141,17 +166,27 @@ int main()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
+        //update view
+        glm::mat4 View = ourCamera.GetViewMatrix();
+
         // draw our first triangle
         ourShader.use();
+        ourShader.setMat4("model", Model);
+        ourShader.setMat4("view", View);
+        ourShader.setMat4("projection", Projection);
         
         // Sends info to shader
         // MVP info
+        /*
         GLint model = glGetUniformLocation(ourShader.ID, "model");
         glUniformMatrix4fv(model, 1, GL_FALSE, &Model[0][0]);
         GLint view = glGetUniformLocation(ourShader.ID, "view");
         glUniformMatrix4fv(view, 1, GL_FALSE, &View[0][0]);
+        */
 
-        // Sun
+        /* SUN */
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, t_sun);
         glm::mat4 model_sun;
         ourShader.setMat4("model", model_sun);
         Sun.Draw();
@@ -183,6 +218,41 @@ void processInput(GLFWwindow *window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+
+    //update camera view
+    //0 is free camera
+    if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS) {
+        cameraView = 0;
+    }
+    //planet view options
+
+    if (cameraView == 0) {
+        if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
+            //handle zoom
+            if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+                ourCamera.zoomIn();
+            }
+            else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+                ourCamera.zoomOut();
+            }
+        }
+        else {
+            //handle camera movement
+            if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+                ourCamera.moveUp();
+            }
+            else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+                ourCamera.moveDown();
+            }
+            else if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+                ourCamera.moveLeft();
+            }
+            else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+                ourCamera.moveRight();
+            }
+        }
+
+    }
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
