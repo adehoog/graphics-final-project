@@ -156,8 +156,12 @@
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="stb_image.h" />
+    <ClInclude Include="TextureLoader.h" />
+    <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="lighting.fs" />
+    <None Include="lighting.vs" />
     <None Include="skybox.fs" />
     <None Include="simpleFS.fs" />
     <None Include="simpleVS.vs" />

@@ -1,1 +1,2 @@
 C:\Users\Anas\Desktop\Anas\Courses\Computer  Graphics\Project\OpenGL-SolarSystem\x64\Debug\SolarSytem.exe
+C:\Users\Anas\Desktop\Anas\Courses\Computer  Graphics\Project\graphics-final-project\x64\Debug\SolarSytem.exe

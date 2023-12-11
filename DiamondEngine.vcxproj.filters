@@ -44,6 +44,12 @@
     <ClInclude Include="include\ft2build.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="TextureLoader.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="simpleVS.vs">
@@ -65,6 +71,12 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="TextShader.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="lighting.vs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="lighting.fs">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
