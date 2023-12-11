@@ -58,27 +58,52 @@ int main()
     // // glew: load all OpenGL function pointers
     glewInit();
 
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_MULTISAMPLE);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 
      // build and compile our shader program
     // ------------------------------------
     Shader ourShader("shader/source.vs", "shader/source.fs"); // shader for object
 
-    // lighting
+    /* VERTEX GENERATION FOR ORBITS */
     /*
-    glm::vec3 lPos(1.0f, 1.0f, -1.5f);
-    glm::vec3 lCol(1.0f, 1.0f, 1.0f);
-    glm::vec3 objCol(1.0f, 0.5f, 0.31f);
+    std::vector<float> orbVert;
+    GLfloat xx;
+    GLfloat zz;
+    float angl;
+    for (int i = 0; i < 2000; i++)
+    {
+        angl = (float)(M_PI / 2 - i * (M_PI / 1000));
+        xx = sin(angl) * 100.0f;
+        zz = cos(angl) * 100.0f;
+        orbVert.push_back(xx);
+        orbVert.push_back(0.0f);
+        orbVert.push_back(zz);
 
-	// Read our .obj file
-	std::vector<glm::vec3> vertices;
-	std::vector<glm::vec2> uvs;
-	std::vector<glm::vec3> normals;
-    bool res = loadObject("objectfiles/cube.obj", vertices, normals);
+    }
     */
+
+    /* VAO-VBO for ORBITS*/
+    /*
+    GLuint VBO_t, VAO_t;
+    glGenVertexArrays(1, &VAO_t);
+    glGenBuffers(1, &VBO_t);
+    glBindVertexArray(VAO_t);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_t);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * orbVert.size(), orbVert.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+    glEnableVertexAttribArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+    */
+    
 
     /* LOAD TEXTURES */
     unsigned int texture_earth = loadTexture("planets/earth2k.jpg");
-    unsigned int t_sun = loadTexture("planets/2k_sun.jpg");
+    unsigned int texture_sun = loadTexture("planets/2k_sun.jpg");
     unsigned int texture_moon = loadTexture("planets/2k_moon.jpg");
     unsigned int texture_mercury = loadTexture("planets/2k_mercury.jpg");
     unsigned int texture_venus = loadTexture("planets/2k_mercury.jpg");
@@ -186,7 +211,7 @@ int main()
 
         /* SUN */
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, t_sun);
+        glBindTexture(GL_TEXTURE_2D, texture_sun);
         glm::mat4 model_sun;
         ourShader.setMat4("model", model_sun);
         Sun.Draw();
@@ -204,8 +229,8 @@ int main()
 
     // optional: de-allocate all resources once they've outlived their purpose:
     // ------------------------------------------------------------------------
-    //glDeleteVertexArrays(1, &VAO);
-    //glDeleteBuffers(1, &VBO);
+    //glDeleteVertexArrays(1, &VAO_t);
+    //glDeleteBuffers(1, &VBO_t);
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
     glfwTerminate();

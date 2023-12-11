@@ -103,7 +103,6 @@ public:
 				}
 			}
 		}
-		/* GENERATE INDEX ARRAY */
 
 
 		/* GENERATE VAO-EBO */
@@ -127,8 +126,6 @@ public:
 		glEnableVertexAttribArray(1);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
-		/* GENERATE VAO-EBO */
-
 
 	}
 	void Draw()
