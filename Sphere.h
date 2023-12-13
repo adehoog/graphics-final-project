@@ -9,138 +9,132 @@
 #include <string>
 #define _USE_MATH_DEFINES
 #include <math.h>
-
 class Sphere
 {
 private:
-	std::vector<float> sphere_vertices;
-	std::vector<float> sphere_texcoord;
-	std::vector<int> sphere_indices;
-	GLuint VBO, VAO, EBO;
-	float radius = 1.0f;
-	int sectorCount = 36;
-	int stackCount = 18;
+
+    GLuint customVBO, customVAO, customEBO;  // OpenGL buffer objects
+    float customRadius;  // Sphere radius
+    int customSectorCount;  // Number of sectors (longitude slices)
+    int customStackCount;   // Number of stacks (latitude slices)
+    std::vector<float> customVertices;  // Vertex data (position and texture coordinates)
+    std::vector<unsigned int> customIndices;  // Index data for element buffer
 
 public:
+    ~Sphere()
+    {
+        glDeleteVertexArrays(1, &customVAO);
+        glDeleteBuffers(1, &customVBO);
+        glDeleteBuffers(1, &customEBO);
+    }
 
-	~Sphere()
-	{
-		glDeleteVertexArrays(1, &VAO);
-		glDeleteBuffers(1, &VBO);
-		glDeleteBuffers(1, &EBO);
-	}
-	Sphere(float r, int sectors, int stacks)
-	{
-		radius = r;
-		sectorCount = sectors;
-		stackCount = stacks;
+    Sphere(float sphereRadius, int numSectors, int numStacks)
+    {
+        customRadius = sphereRadius;
+        customSectorCount = numSectors;
+        customStackCount = numStacks;
 
+        // Generate Vertex Data
+        float x, y, z, xy, lengthInv = 1.0f / customRadius, s, t;
+        float sectorStep = (float)(2 * M_PI / customSectorCount);
+        float stackStep = (float)(M_PI / customStackCount);
+        float sectorAngle, stackAngle;
 
-		/* GENERATE VERTEX ARRAY */
-		float x, y, z, xy;                              // vertex position
-		float lengthInv = 1.0f / radius;    // vertex normal
-		float s, t;                                     // vertex texCoord
+        int i = 0;
+        while (i <= customStackCount)
+        {
+            stackAngle = (float)(M_PI / 2 - i * stackStep);
+            xy = 1.02f * customRadius * cosf(stackAngle);
+            z = customRadius * sinf(stackAngle);
 
-		float sectorStep = (float)(2 * M_PI / sectorCount);
-		float stackStep = (float)(M_PI / stackCount);
-		float sectorAngle, stackAngle;
+            int j = 0;
+            while (j <= customSectorCount)
+            {
+                sectorAngle = j * sectorStep;
 
-		for (int i = 0; i <= stackCount; ++i)
-		{
-			stackAngle = (float)(M_PI / 2 - i * stackStep);        // starting from pi/2 to -pi/2
-			xy = 1.02f * radius * cosf(stackAngle);             // r * cos(u)
-			z = radius * sinf(stackAngle);              // r * sin(u)
+                x = xy * cosf(sectorAngle);
+                y = xy * sinf(sectorAngle);
 
-			// add (sectorCount+1) vertices per stack
-			// the first and last vertices have same position and normal, but different tex coords
-			for (int j = 0; j <= sectorCount; ++j)
-			{
-				sectorAngle = j * sectorStep;           // starting from 0 to 2pi
+                // Push vertex position and texture coordinates to the vectors
+                customVertices.push_back(x);
+                customVertices.push_back(y);
+                customVertices.push_back(z);
+                s = (float)j / customSectorCount;
+                t = (float)i / customStackCount;
+                customVertices.push_back(s);
+                customVertices.push_back(t);
 
-				// vertex position (x, y, z)
-				x = xy * cosf(sectorAngle);             // r * cos(u) * cos(v)
-				y = xy * sinf(sectorAngle);				// r * cos(u) * sin(v)
-				sphere_vertices.push_back(x);
-				sphere_vertices.push_back(y);
-				sphere_vertices.push_back(z);
+                j++;
+            }
 
+            i++;
+        }
 
-				// vertex tex coord (s, t) range between [0, 1]
-				s = (float)j / sectorCount;
-				t = (float)i / stackCount;
-				sphere_vertices.push_back(s);
-				sphere_vertices.push_back(t);
+        // Generate Index Data
+        int k1, k2;
+        int iIndex = 0;
+        while (iIndex < customStackCount)
+        {
+            k1 = iIndex * (customSectorCount + 1);
+            k2 = k1 + customSectorCount + 1;
 
-			}
-		}
-		/* GENERATE VERTEX ARRAY */
-		
+            int jIndex = 0;
+            while (jIndex < customSectorCount)
+            {
+                if (iIndex != 0)
+                {
+                    customIndices.push_back(k1);
+                    customIndices.push_back(k2);
+                    customIndices.push_back(k1 + 1);
+                }
 
-		/* GENERATE INDEX ARRAY */
-		int k1, k2;
-		for (int i = 0; i < stackCount; ++i)
-		{
-			k1 = i * (sectorCount + 1);     // beginning of current stack
-			k2 = k1 + sectorCount + 1;      // beginning of next stack
+                if (iIndex != (customStackCount - 1))
+                {
+                    customIndices.push_back(k1 + 1);
+                    customIndices.push_back(k2);
+                    customIndices.push_back(k2 + 1);
+                }
 
-			for (int j = 0; j < sectorCount; ++j, ++k1, ++k2)
-			{
-				// 2 triangles per sector excluding first and last stacks
-				// k1 => k2 => k1+1
-				if (i != 0)
-				{
-					sphere_indices.push_back(k1);
-					sphere_indices.push_back(k2);
-					sphere_indices.push_back(k1 + 1);
-				}
+                jIndex++;
+                k1++;
+                k2++;
+            }
 
-				// k1+1 => k2 => k2+1
-				if (i != (stackCount - 1))
-				{
-					sphere_indices.push_back(k1 + 1);
-					sphere_indices.push_back(k2);
-					sphere_indices.push_back(k2 + 1);
-				}
-			}
-		}
-		/* GENERATE INDEX ARRAY */
-		
+            iIndex++;
+        }
 
-		/* GENERATE VAO-EBO */
-		//GLuint VBO, VAO, EBO;
-		glGenVertexArrays(1, &VAO);
-		glGenBuffers(1, &VBO);
-		glGenBuffers(1, &EBO);
-		// Bind the Vertex Array Object first, then bind and set vertex buffer(s) and attribute pointer(s).
-		glBindVertexArray(VAO);
+        // Generate OpenGL Buffers
+        glGenVertexArrays(1, &customVAO);
+        glGenBuffers(1, &customVBO);
+        glGenBuffers(1, &customEBO);
 
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferData(GL_ARRAY_BUFFER, (unsigned int)sphere_vertices.size() * sizeof(float), sphere_vertices.data(), GL_DYNAMIC_DRAW);
+        glBindVertexArray(customVAO);
 
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, (unsigned int)sphere_indices.size() * sizeof(unsigned int), sphere_indices.data(), GL_DYNAMIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, customVBO);
+        glBufferData(GL_ARRAY_BUFFER, (unsigned int)customVertices.size() * sizeof(float), customVertices.data(), GL_DYNAMIC_DRAW);
 
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
-		glEnableVertexAttribArray(0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, customEBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, (unsigned int)customIndices.size() * sizeof(unsigned int), customIndices.data(), GL_DYNAMIC_DRAW);
 
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
-		glEnableVertexAttribArray(1);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindVertexArray(0);
-		/* GENERATE VAO-EBO */
+        // Set vertex attribute pointers
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
+        glEnableVertexAttribArray(0);
 
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+        glEnableVertexAttribArray(1);
 
-	}
-	void Draw()
-	{
-		glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES,   
-			(unsigned int)sphere_indices.size(),
-			GL_UNSIGNED_INT,					
-			(void*)0);
-		glBindVertexArray(0);
-	}
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+    }
+
+    void Draw()
+    {
+        glBindVertexArray(customVAO);
+        glDrawElements(GL_TRIANGLES, (unsigned int)customIndices.size(), GL_UNSIGNED_INT, (void*)0);
+        glBindVertexArray(0);
+    }
 };
+
 
 
 #endif

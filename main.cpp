@@ -17,13 +17,13 @@
 
 
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void get_frame_buffer(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
 unsigned int loadTexture(char const * path);
-unsigned int loadCubemap(std::vector<std::string> faces);
+unsigned int loadEnvironmentMap(std::vector<std::string> faces);
 
 
-void GetDesktopResolution(float& horizontal, float& vertical)
+void Fetch_Resolution(float& horizontal, float& vertical)
 {
 	RECT desktop;
 	// Get a handle to the desktop window
@@ -56,6 +56,7 @@ bool keys[1024];
 GLfloat SceneRotateY = 0.0f;
 GLfloat SceneRotateX = 0.0f;
 bool onPlanet = false;
+
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
@@ -126,7 +127,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 }
 
 int main() {
-	GetDesktopResolution(SCREEN_WIDTH, SCREEN_HEIGHT); // get resolution for create window
+	Fetch_Resolution(SCREEN_WIDTH, SCREEN_HEIGHT); // get resolution for create window
 	camera.LookAtPos = point;
 
 	/* GLFW INIT */
@@ -146,7 +147,7 @@ int main() {
 		return -1;
 	}
 	glfwMakeContextCurrent(window);
-	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+	glfwSetFramebufferSizeCallback(window, get_frame_buffer);
 	glfwSetCursorPosCallback(window, mouse_callback);
 	glfwSetKeyCallback(window, key_callback);
 	glfwSetScrollCallback(window, scroll_callback);
@@ -173,6 +174,25 @@ int main() {
 	Shader texShader("simpleVS.vs", "texFS.fs");
 	Shader lighTing("lighting.vs", "lighting.fs");
 
+
+
+
+	/* LOAD TEXTURES */
+	PlanetaryTextures planetaryTextures = loadPlanetaryTextures();
+	/* LOAD TEXTURES */
+
+	/* SPHERE GENERATION */
+	Sphere Sun(100.0f, 36 * 5, 18 * 5);
+	Sphere Mercury(10.0f, 36, 18);
+	Sphere Venus(12.0f, 36, 18);
+	Sphere Earth(11.8f, 36, 18);
+	Sphere Mars(8.0f, 36, 18);
+	Sphere Jupiter(40.0f, 36, 18);
+	Sphere Saturn(37.0f, 36, 18);
+	Sphere Uranus(30.0f, 36, 18);
+	Sphere Neptune(30.0f, 36, 19);
+	Sphere Moon(5.5f, 36, 18);
+	/* SPHERE GENERATION */
 
 
 	/* SKYBOX GENERATION */
@@ -209,33 +229,16 @@ int main() {
 	glGenBuffers(1, &VBO_t);
 	glBindVertexArray(VAO_t);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO_t);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float)*orbVert.size(), orbVert.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * orbVert.size(), orbVert.data(), GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 	/* VAO-VBO for ORBITS*/
 
-	/* LOAD TEXTURES */
-	PlanetaryTextures planetaryTextures = loadPlanetaryTextures();
-	/* LOAD TEXTURES */
 
-	/* SPHERE GENERATION */
-	Sphere Sun(100.0f, 36 * 5, 18 * 5);
-	Sphere Mercury(10.0f, 36, 18);
-	Sphere Venus(12.0f, 36, 18);
-	Sphere Earth(11.8f, 36, 18);
-	Sphere Mars(8.0f, 36, 18);
-	Sphere Jupiter(40.0f, 36, 18);
-	Sphere Saturn(37.0f, 36, 18);
-	Sphere Uranus(30.0f, 36, 18);
-	Sphere Neptune(30.0f, 36, 19);
-	Sphere Moon(5.5f, 36, 18);
-	/* SPHERE GENERATION */
-
-
-	unsigned int cubemapTexture = loadCubemap(faces);
-	unsigned int cubemapTextureExtra = loadCubemap(faces_extra);
+	unsigned int cubemapTexture = loadEnvironmentMap(faces);
+	unsigned int cubemapTextureExtra = loadEnvironmentMap(faces_extra);
 	GLfloat camX = 10.0f;
 	GLfloat camZ = 10.0f;
 	
