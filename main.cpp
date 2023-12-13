@@ -20,21 +20,8 @@
 void get_frame_buffer(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
 unsigned int loadTexture(char const * path);
-unsigned int loadEnvironmentMap(std::vector<std::string> faces);
+unsigned int loadEnvironmentMap(std::vector<std::string> skyBox1);
 
-
-void Fetch_Resolution(float& horizontal, float& vertical)
-{
-	RECT desktop;
-	// Get a handle to the desktop window
-	const HWND hDesktop = GetDesktopWindow();
-	// Get the size of screen to the variable desktop
-	GetWindowRect(hDesktop, &desktop);
-
-	horizontal = desktop.right;
-	vertical = desktop.bottom;
-	
-}
 
 
 GLfloat deltaTime = 0.0f;	
@@ -43,7 +30,7 @@ Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 bool onRotate = false;
 bool onFreeCam = true;
 bool SkyBoxExtra = false;
-float SCREEN_WIDTH = 800, SCREEN_HEIGHT = 600;
+float SCREEN_WIDTH = 1600, SCREEN_HEIGHT = 900;
 
 glm::vec3 point = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 PlanetPos = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -127,9 +114,8 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 }
 
 int main() {
-	Fetch_Resolution(SCREEN_WIDTH, SCREEN_HEIGHT); // get resolution for create window
-	camera.LookAtPos = point;
 
+	camera.LookAtPos = point;
 	/* GLFW INIT */
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -239,8 +225,9 @@ int main() {
 	/* VAO-VBO for ORBITS*/
 
 
-	unsigned int cubemapTexture = loadEnvironmentMap(faces);
-	unsigned int cubemapTextureExtra = loadEnvironmentMap(faces_extra);
+	unsigned int cubemapTexture = loadEnvironmentMap(skyBox1);
+
+	unsigned int cubemapTextureExtra = loadEnvironmentMap(skyBox2);
 	GLfloat camX = 10.0f;
 	GLfloat camZ = 10.0f;
 	
@@ -361,6 +348,7 @@ int main() {
 		zz = cos(glfwGetTime() * PlanetSpeed * 0.55f) * 100.0f * 4.0f *1.3f;
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, planetaryTextures.earth);
+		//glBindTexture(GL_TEXTURE_2D, planetaryTextures.earth_clouds);
 		model_earth = glm::translate(model_earth, point);
 		model_earth = glm::rotate(model_earth, glm::radians(SceneRotateY), glm::vec3(1.0f, 0.0f, 0.0f));
 		model_earth = glm::rotate(model_earth, glm::radians(SceneRotateX), glm::vec3(0.0f, 0.0f, 1.0f));
@@ -490,7 +478,7 @@ int main() {
 		glBindTexture(GL_TEXTURE_2D, planetaryTextures.venus);
 
 		/* ORBITS */
-		//glBindVertexArray(VAO_t);
+		glBindVertexArray(VAO_t);
 		glLineWidth(1.0f);
 		glm::mat4 modelorb;
 		for (float i = 2; i < 10; i++)
@@ -547,7 +535,7 @@ int main() {
 		SkyboxShader.setMat4("view", view);
 		SkyboxShader.setMat4("projection", projection);
 		// skybox cube
-		//glBindVertexArray(skyboxVAO);
+		glBindVertexArray(skyboxVAO);
 		glActiveTexture(GL_TEXTURE0);
 		if (SkyBoxExtra)
 			glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTextureExtra);

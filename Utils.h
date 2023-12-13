@@ -68,7 +68,7 @@ PlanetaryTextures loadPlanetaryTextures() {
 	textPlanet.uranus = loadTexture("resources/planets/2k_uranus.jpg");
 	textPlanet.neptune = loadTexture("resources/planets/2k_neptune.jpg");
 	textPlanet.saturn_ring = loadTexture("resources/planets/r.jpg");
-	textPlanet.earth_clouds = loadTexture("resources/planets/2k_earth_clouds.jpg");
+	//textPlanet.earth_clouds = loadTexture("resources/planets/2k_earth_clouds.jpg");
 	return textPlanet;
 }
 
@@ -78,7 +78,7 @@ void get_frame_buffer(GLFWwindow* window, int width, int height)
 	glViewport(0, 0, width, height);
 }
 
-unsigned int loadEnvironmentMap(std::vector<std::string> faces)
+unsigned int loadEnvironmentMap(std::vector<std::string> skybox1)
 {
 	unsigned int textureID;
 	glGenTextures(1, &textureID);
@@ -86,10 +86,10 @@ unsigned int loadEnvironmentMap(std::vector<std::string> faces)
 
 	int width, height, nrChannels;
 
-	for (unsigned int i = 0; i < faces.size(); i++)
+	for (unsigned int i = 0; i < skybox1.size(); i++)
 	{
 
-		unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
+		unsigned char* data = stbi_load(skybox1[i].c_str(), &width, &height, &nrChannels, 0);
 
 		if (data)
 		{
@@ -100,7 +100,7 @@ unsigned int loadEnvironmentMap(std::vector<std::string> faces)
 		}
 		else
 		{
-			std::cout << "Cubemap texture failed to load at path: " << faces[i] << std::endl;
+			std::cout << "Cubemap texture failed to load at path: " << skybox1[i] << std::endl;
 			stbi_image_free(data);
 		}
 	}
@@ -159,7 +159,7 @@ float skyboxVertices[] = {
 };
 
 
-std::vector<std::string> faces
+std::vector<std::string> skyBox1
 {
 	"resources/skybox/starfield/starfield_rt.tga",
 	"resources/skybox/starfield/starfield_lf.tga",
@@ -168,7 +168,7 @@ std::vector<std::string> faces
 	"resources/skybox/starfield/starfield_ft.tga",
 	"resources/skybox/starfield/starfield_bk.tga",
 };
-std::vector<std::string> faces_extra
+std::vector<std::string> skyBox2
 {
 	"resources/skybox/blue/bkg1_right.png",
 	"resources/skybox/blue/bkg1_left.png",
