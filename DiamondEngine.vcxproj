@@ -153,6 +153,7 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="include\ft2build.h" />
+    <ClInclude Include="InputManager.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="stb_image.h" />

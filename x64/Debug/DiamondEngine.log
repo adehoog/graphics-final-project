@@ -1,9 +1,9 @@
 ﻿C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(517,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (DiamondEngine.vcxproj).  This can lead to incorrect clean and rebuild behavior.
   main.cpp
-C:\Users\Anas\Desktop\Anas\Courses\Computer  Graphics\Project\graphics-final-project\main.cpp(35,22): warning C4244: '=': conversion from 'LONG' to 'float', possible loss of data
-C:\Users\Anas\Desktop\Anas\Courses\Computer  Graphics\Project\graphics-final-project\main.cpp(36,20): warning C4244: '=': conversion from 'LONG' to 'float', possible loss of data
-C:\Users\Anas\Desktop\Anas\Courses\Computer  Graphics\Project\graphics-final-project\main.cpp(149,54): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\Anas\Desktop\Anas\Courses\Computer  Graphics\Project\graphics-final-project\main.cpp(149,40): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\Anas\Desktop\Anas\Courses\Computer  Graphics\Project\graphics-final-project\main.cpp(37,22): warning C4244: '=': conversion from 'LONG' to 'float', possible loss of data
+C:\Users\Anas\Desktop\Anas\Courses\Computer  Graphics\Project\graphics-final-project\main.cpp(38,20): warning C4244: '=': conversion from 'LONG' to 'float', possible loss of data
+C:\Users\Anas\Desktop\Anas\Courses\Computer  Graphics\Project\graphics-final-project\main.cpp(144,54): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\Anas\Desktop\Anas\Courses\Computer  Graphics\Project\graphics-final-project\main.cpp(144,40): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
 glfw3.lib(init.obj) : warning LNK4099: PDB '' was not found with 'glfw3.lib(init.obj)' or at ''; linking object as if no debug info
 glfw3.lib(monitor.obj) : warning LNK4099: PDB '' was not found with 'glfw3.lib(monitor.obj)' or at ''; linking object as if no debug info
 glfw3.lib(window.obj) : warning LNK4099: PDB '' was not found with 'glfw3.lib(window.obj)' or at ''; linking object as if no debug info

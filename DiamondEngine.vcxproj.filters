@@ -50,6 +50,9 @@
     <ClInclude Include="Utils.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="InputManager.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="simpleVS.vs">

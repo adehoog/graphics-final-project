@@ -10,6 +10,40 @@
 #include <string>
 #include <iostream>
 
+
+struct PlanetaryTextures {
+	unsigned int earth;
+	unsigned int sun;
+	unsigned int moon;
+	unsigned int mercury;
+	unsigned int venus;
+	unsigned int mars;
+	unsigned int jupiter;
+	unsigned int saturn;
+	unsigned int uranus;
+	unsigned int neptune;
+	unsigned int saturn_ring;
+	unsigned int earth_clouds;
+};
+
+PlanetaryTextures loadPlanetaryTextures() {
+	PlanetaryTextures textPlanet;
+
+	textPlanet.earth = loadTexture("resources/planets/earth2k.jpg");
+	textPlanet.sun = loadTexture("resources/planets/2k_sun.jpg");
+	textPlanet.moon = loadTexture("resources/planets/2k_moon.jpg");
+	textPlanet.mercury = loadTexture("resources/planets/2k_mercury.jpg");
+	textPlanet.venus = loadTexture("resources/planets/2k_mercury.jpg");
+	textPlanet.mars = loadTexture("resources/planets/2k_mars.jpg");
+	textPlanet.jupiter = loadTexture("resources/planets/2k_jupiter.jpg");
+	textPlanet.saturn = loadTexture("resources/planets/2k_saturn.jpg");
+	textPlanet.uranus = loadTexture("resources/planets/2k_uranus.jpg");
+	textPlanet.neptune = loadTexture("resources/planets/2k_neptune.jpg");
+	textPlanet.saturn_ring = loadTexture("resources/planets/r.jpg");
+	textPlanet.earth_clouds = loadTexture("resources/planets/2k_earth_clouds.jpg");
+	return textPlanet;
+}
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
 	glViewport(0, 0, width, height);
