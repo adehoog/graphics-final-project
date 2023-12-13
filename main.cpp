@@ -139,7 +139,9 @@ int main() {
 	/* GLFW INIT */
 
 	/* GLFW WINDOW CREATION */
-	GLFWwindow* window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "LearnOpenGL", glfwGetPrimaryMonitor(), NULL);
+	//GLFWwindow* window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "LearnOpenGL", glfwGetPrimaryMonitor(), NULL);
+	GLFWwindow* window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "LearnOpenGL", NULL, NULL);
+
 	if (window == NULL)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -488,7 +490,7 @@ int main() {
 		glBindTexture(GL_TEXTURE_2D, planetaryTextures.venus);
 
 		/* ORBITS */
-		glBindVertexArray(VAO_t);
+		//glBindVertexArray(VAO_t);
 		glLineWidth(1.0f);
 		glm::mat4 modelorb;
 		for (float i = 2; i < 10; i++)
@@ -545,7 +547,7 @@ int main() {
 		SkyboxShader.setMat4("view", view);
 		SkyboxShader.setMat4("projection", projection);
 		// skybox cube
-		glBindVertexArray(skyboxVAO);
+		//glBindVertexArray(skyboxVAO);
 		glActiveTexture(GL_TEXTURE0);
 		if (SkyBoxExtra)
 			glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTextureExtra);

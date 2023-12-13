@@ -103,6 +103,8 @@ public:
             iIndex++;
         }
 
+
+
         // Generate OpenGL Buffers
         glGenVertexArrays(1, &customVAO);
         glGenBuffers(1, &customVBO);
